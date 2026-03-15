@@ -1,0 +1,159 @@
+/* ─── Global Reset & Smooth Typography ──────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Ultra-Luxury Obsidian Palette */
+  --background: #030303;      /* Deepest Studio Black */
+  --foreground: #ffffff;      
+  --accent: #6366f1;         
+  --zinc-border: rgba(255, 255, 255, 0.04);
+  --glass-panel: rgba(10, 10, 12, 0.85);
+  --radius-pro: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  /* Anti-aliasing for buttery smooth fonts */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  outline: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow: hidden;
+  /* Premium tight kerning */
+  letter-spacing: -0.02em;
+}
+
+/* ─── THE STUDIO VOID CANVAS ───────────────────────────────── */
+
+.react-flow {
+  /* Ultra-smooth liquid gradient - No noise, No pixels */
+  background: radial-gradient(
+    circle at center, 
+    #0d0d12 0%, 
+    #050508 40%, 
+    #020204 100%
+  ) !important;
+  position: relative;
+}
+
+/* Optical Light Grid (Barely visible, high-end feel) */
+.react-flow__background {
+  /* Using thin lines with extremely low opacity for a "Pro" look */
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px) !important;
+  background-size: 80px 80px !important; /* Larger squares for cleaner look */
+}
+
+/* Focused Light Falloff (The "Lumo Studio" look) */
+.react-flow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center, 
+    rgba(99, 102, 241, 0.02) 0%, 
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── FLOATING HUD (Minimap & Controls) ─────────────────────── */
+
+.react-flow__minimap {
+  background: var(--glass-panel) !important;
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: var(--radius-pro);
+  border: 1px solid var(--zinc-border) !important;
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.9);
+  margin: 32px !important;
+  overflow: hidden;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-flow__controls {
+  background: var(--glass-panel) !important;
+  backdrop-filter: blur(30px);
+  padding: 6px;
+  border-radius: 12px !important;
+  border: 1px solid var(--zinc-border) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 4px;
+  margin: 32px !important;
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  fill: #71717a !important; 
+  transition: all 0.3s ease !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+.react-flow__controls-button:hover {
+  fill: #ffffff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ─── EDGES & LOGIC LINES ──────────────────────────────────── */
+
+/* Let CustomEdge component handle all edge styling */
+
+/* ─── UI INTERACTION ───────────────────────────────────────── */
+
+/* Selection Box - Ultra Fine */
+.react-flow__selection {
+  background: rgba(255, 255, 255, 0.01) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Stealth Scrollbar - Apple Style */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { 
+  background: rgba(255, 255, 255, 0.03); 
+  border-radius: 100px; 
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.1); }
+
+/* Custom Text Selection */
+::selection {
+  background: rgba(255, 255, 255, 0.99);
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .react-flow__controls {
+    position: fixed !important;
+    flex-direction: row !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    left: max(12px, env(safe-area-inset-left)) !important;
+    transform: none !important;
+    margin: 0 !important;
+  }
+  .react-flow__minimap { display: none !important; }
+}
