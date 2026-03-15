@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useStore } from './store';
 import { shallow } from 'zustand/shallow';
 import styled from 'styled-components';
-import { Send, X, Boxes, Cable, Activity, ShieldCheck, AlertCircle, Cpu } from 'lucide-react';
+import { Send, X, Boxes, Cable, ShieldCheck, AlertCircle, Cpu } from 'lucide-react';
 import { gsap } from 'gsap';
 
 // --- THEME ALIGNMENT (Matching index.css & Toolbar) ---

@@ -11,8 +11,7 @@ import {
   GitMerge, 
   Globe, 
   StickyNote, 
-  Timer,
-  Layers
+  Timer
 } from 'lucide-react';
 
 // --- THEME ALIGNMENT (Sync with index.css & Submit.js) ---

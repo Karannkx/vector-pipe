@@ -1,11 +1,10 @@
 
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Position } from 'reactflow';
-import { BaseNode, NodeField, FieldLabel, FieldTextarea } from './BaseNode';
+import { BaseNode, FieldTextarea } from './BaseNode';
 import { useStore } from '../store';
-import { Type, Variable, Code2, Cpu } from 'lucide-react';
+import { Variable, Code2, Cpu } from 'lucide-react';
 import styled from 'styled-components';
-import { gsap } from 'gsap';
 
 // --- THEME ALIGNMENT ---
 const THEME = {

@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { useRef, useState } from 'react';
+import { Handle } from 'reactflow';
 import styled, { keyframes, css } from 'styled-components';
 import { useStore } from '../store';
 import { X, Check } from 'lucide-react';

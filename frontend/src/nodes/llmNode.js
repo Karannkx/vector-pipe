@@ -2,7 +2,7 @@ import React from 'react';
 import { Position } from 'reactflow';
 import { BaseNode } from './BaseNode';
 import styled from 'styled-components';
-import { Cpu, Activity, ShieldCheck, Zap } from 'lucide-react';
+import { Cpu, ShieldCheck, Zap } from 'lucide-react';
 
 // --- LUXURY SYSTEM THEME ---
 const THEME = {

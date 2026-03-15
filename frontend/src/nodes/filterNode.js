@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Position } from 'reactflow';
-import { BaseNode, NodeField, FieldLabel, FieldInput, FieldSelect } from './BaseNode';
+import { BaseNode, NodeField, FieldLabel, FieldInput } from './BaseNode';
 import { useStore } from '../store';
 import { Filter } from 'lucide-react';
 
