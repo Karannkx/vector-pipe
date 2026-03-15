@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from './store';
 import { shallow } from 'zustand/shallow';
 import styled from 'styled-components';
@@ -90,9 +90,9 @@ const ExecuteButton = styled.button`
 const HudPanel = styled.div`
   position: fixed;
   top: 100px; /* Leaves gap for the Toolbar at the top */
-  right: -420px; /* Initially hidden */
+  right: 32px;
   bottom: 40px; /* Gap from bottom */
-  width: 380px;
+  width: min(380px, calc(100vw - 64px));
   background: ${THEME.bg};
   backdrop-filter: blur(32px) saturate(150%);
   -webkit-backdrop-filter: blur(32px);
@@ -103,6 +103,33 @@ const HudPanel = styled.div`
   flex-direction: column;
   overflow: hidden;
   box-shadow: -20px 40px 80px rgba(0, 0, 0, 0.8);
+  will-change: transform;
+
+  @media (max-width: 1024px) {
+    top: 88px;
+    right: 20px;
+    bottom: 20px;
+    width: min(340px, calc(100vw - 40px));
+    border-radius: 20px;
+  }
+
+  @media (max-width: 768px) {
+    top: auto;
+    right: 12px;
+    bottom: calc(60px + env(safe-area-inset-bottom));
+    width: min(260px, calc(100vw - 24px));
+    max-height: min(260px, calc(100vh - 150px));
+    border-radius: 16px;
+    box-shadow: -10px 20px 36px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 480px) {
+    right: 8px;
+    bottom: calc(56px + env(safe-area-inset-bottom));
+    width: min(220px, calc(100vw - 16px));
+    max-height: min(210px, calc(100vh - 140px));
+    border-radius: 14px;
+  }
 `;
 
 const TerminalHeader = styled.div`
@@ -122,6 +149,25 @@ const TerminalHeader = styled.div`
     letter-spacing: 0.2em;
     color: ${THEME.accent};
   }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+
+    .brand {
+      gap: 6px;
+      font-size: 7px;
+      letter-spacing: 0.12em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+
+    .brand {
+      font-size: 6px;
+      letter-spacing: 0.1em;
+    }
+  }
 `;
 
 const ContentScroll = styled.div`
@@ -133,6 +179,16 @@ const ContentScroll = styled.div`
   gap: 40px;
 
   &::-webkit-scrollbar { width: 0px; }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    gap: 10px;
+  }
 `;
 
 const StatBlock = styled.div`
@@ -154,6 +210,31 @@ const StatBlock = styled.div`
     color: ${THEME.textMain};
     line-height: 1;
   }
+
+  @media (max-width: 768px) {
+    .label {
+      font-size: 6px;
+      margin-bottom: 4px;
+      gap: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    .value {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .label {
+      font-size: 5px;
+      margin-bottom: 3px;
+      gap: 3px;
+    }
+
+    .value {
+      font-size: 16px;
+    }
+  }
 `;
 
 const ValidationPill = styled.div`
@@ -169,6 +250,59 @@ const ValidationPill = styled.div`
     flex: 1;
     h4 { font-size: 12px; margin: 0; color: ${p => p.$ok ? '#10b981' : '#f43f5e'}; }
     p { font-size: 11px; margin: 4px 0 0 0; color: ${THEME.textMuted}; }
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    gap: 8px;
+
+    .info {
+      h4 { font-size: 9px; }
+      p { font-size: 8px; line-height: 1.35; }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+    gap: 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .info {
+      h4 { font-size: 8px; }
+      p { display: none; }
+    }
+  }
+`;
+
+const StatsStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
+`;
+
+const FooterMeta = styled.div`
+  margin-top: auto;
+  opacity: 0.3;
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
@@ -186,6 +320,11 @@ const CloseHUD = styled.button`
   transition: all 0.2s ease;
 
   &:hover { background: #ff4545; transform: rotate(90deg); }
+
+  @media (max-width: 480px) {
+    width: 28px;
+    height: 28px;
+  }
 `;
 
 const selector = (state) => ({ nodes: state.nodes, edges: state.edges });
@@ -195,6 +334,12 @@ export const SubmitButton = () => {
   const { nodes, edges } = useStore(selector, shallow);
   const [report, setReport] = useState(null);
   const hudRef = useRef(null);
+
+  useEffect(() => {
+    if (hudRef.current) {
+      gsap.set(hudRef.current, { xPercent: 115 });
+    }
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -208,7 +353,7 @@ export const SubmitButton = () => {
       
       // GSAP: Premium HUD Reveal
       gsap.to(hudRef.current, { 
-        right: 32, 
+        xPercent: 0,
         duration: 1, 
         ease: "expo.out" 
       });
@@ -219,7 +364,7 @@ export const SubmitButton = () => {
 
   const closeHUD = () => {
     gsap.to(hudRef.current, { 
-      right: -420, 
+      xPercent: 115,
       duration: 0.8, 
       ease: "power4.in" 
     });
@@ -247,7 +392,7 @@ export const SubmitButton = () => {
 
         {report && (
           <ContentScroll>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <StatsStack>
               <StatBlock>
                 <div className="label"><Boxes size={10} /> Active Modules</div>
                 <div className="value">{report.num_nodes}</div>
@@ -257,7 +402,7 @@ export const SubmitButton = () => {
                 <div className="label"><Cable size={10} /> Logical Links</div>
                 <div className="value">{report.num_edges}</div>
               </StatBlock>
-            </div>
+            </StatsStack>
 
             <ValidationPill $ok={report.is_dag}>
               {report.is_dag ? <ShieldCheck color="#10b981" size={24} /> : <AlertCircle color="#f43f5e" size={24} />}
@@ -267,10 +412,10 @@ export const SubmitButton = () => {
               </div>
             </ValidationPill>
 
-            <div style={{ marginTop: 'auto', opacity: 0.3, fontSize: '9px', fontFamily: 'JetBrains Mono' }}>
+            <FooterMeta>
               PROTOCOL_VERSION: 1.0.4_LUXURY<br />
               TIMESTAMP: {new Date().toLocaleTimeString()}
-            </div>
+            </FooterMeta>
           </ContentScroll>
         )}
       </HudPanel>
