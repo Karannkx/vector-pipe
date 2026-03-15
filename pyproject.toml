@@ -1,7 +1,7 @@
 [project]
 name = "vector-pipe-backend"
 version = "0.1.0"
-requires-python = ">=3.12,<3.15"
+requires-python = ">=3.13,<3.14"
 dependencies = [
   "fastapi==0.117.1",
   "pydantic==2.11.7"
